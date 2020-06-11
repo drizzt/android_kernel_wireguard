@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
-USER_AGENT="WireGuard-AndroidROMBuild/0.3 ($(uname -a))"
+USER_AGENT="WireGuard-AndroidROMBuild/0.4 ($(uname -a))"
 
 exec 9>.wireguard-fetch-lock
-flock -n 9 || exit 0
+/usr/bin/flock -n 9 || exit 0
 
 [[ $(( $(date +%s) - $(stat -c %Y "net/wireguard/.check" 2>/dev/null || echo 0) )) -gt 86400 ]] || exit 0
 
@@ -23,6 +23,6 @@ fi
 
 rm -rf net/wireguard
 mkdir -p net/wireguard
-curl -A "$USER_AGENT" -LsS --connect-timeout 30 "https://git.zx2c4.com/wireguard-linux-compat/snapshot/wireguard-linux-compat-$VERSION.tar.xz" | tar -C "net/wireguard" -xJf - --strip-components=2 "wireguard-linux-compat-$VERSION/src"
+/usr/bin/curl -A "$USER_AGENT" -LsS --connect-timeout 30 "https://git.zx2c4.com/wireguard-linux-compat/snapshot/wireguard-linux-compat-$VERSION.tar.xz" | tar -C "net/wireguard" -xJf - --strip-components=2 "wireguard-linux-compat-$VERSION/src"
 sed -i 's/tristate/bool/;s/default m/default y/;' net/wireguard/Kconfig
 touch net/wireguard/.check

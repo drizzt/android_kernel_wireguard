@@ -4,8 +4,8 @@
 
 WIREGUARD_PATH := $(call my-dir)
 
-TARGET_KERNEL_BINARIES: patch-wireguard
-patch-wireguard:
+$(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/arch/$(KERNEL_ARCH)/boot/$(BOARD_KERNEL_IMAGE_NAME): $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/net/wireguard
+$(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/net/wireguard:
 	@$(WIREGUARD_PATH)/patch-kernel.sh "$(TARGET_KERNEL_SOURCE)"; \
 	ret=$$?; [ $$ret -eq 0 ] && exit 0; [ $$ret -ne 77 ] && exit $$ret; \
 	echo -e "" \
@@ -20,5 +20,3 @@ patch-wireguard:
 		"\e[1;37;41m+ requirement. Sorry for the inconvenience.     +\e[0m\n" \
 		"\e[1;37;41m=================================================\e[0m" >&2 \
 	exit 0
-
-.PHONY: patch-wireguard
